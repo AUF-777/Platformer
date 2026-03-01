@@ -4,7 +4,7 @@ Platformer/
     assets/
         image/
             player.png
-            enemy.pg
+            enemy.pgg
             coin.png
             titls (если будет)
             bg.png (усли будет фон)
