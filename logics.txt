@@ -30,3 +30,5 @@ Platformer/
             __init__.py
             hud.py
             screens.py
+            ''
+
