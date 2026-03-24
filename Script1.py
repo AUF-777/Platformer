@@ -126,7 +126,7 @@ class Game:
             PLatform(610,320,140,20),
             PLatform(900, 300, 250, 20),
             PLatform(1200, 250, 200, 20),
-            PLatform(1500, 380, 220, 20),
+            PLatform(1500, 340, 220, 20),
             PLatform(1800, 280, 220, 20)
         ]
 
@@ -151,6 +151,7 @@ class Game:
         self.game_over = False
 
         self.camera_x = 0
+        self.finish = pygame.Rect(2050, HEIGHT - 100, 40, 60)
 
     def collect_coins(self):
         for coin in self.coins[:]:
@@ -162,10 +163,14 @@ class Game:
             if self.player.rect.colliderect(Enemy.rect):
                 self.player.hit()
 
-    def update_cmera(self):
+    def check_finish(self):
+        if self.player.rect.colliderect(self.finish):
+            print("Ты выйграл")
 
+    def update_camera(self):
 
-        self.camera_x = 0
+        self.camera_x = max(0, min(self.player.rect.centerx - WIDTH // 2, LEVL_WIDTH - WIDTH))
+
     def run(self):
         running = True
         while running:
@@ -190,7 +195,8 @@ class Game:
 
                 if self.player.lives <= 0:
                     self.game_over = True
-                self.update_cmera()
+                self.check_finish()
+                self.update_camera()
 
             screen.fill((135,206,234))
 
@@ -205,6 +211,8 @@ class Game:
 
             screen.blit(font.render(f"Счёт : {self.score}", True, (0,0,0)), (10,10))
             screen.blit(font.render(f"Жизни : {self.player.lives}", True, (0, 0, 0)), (10, 40))
+
+
 
             if self.game_over:
 
