@@ -16,7 +16,7 @@ GRAVITY = 0.8
 #-------подготовка к камере--------
 LEVL_WIDTH = 2200
 
-class PLatform:
+class Platform:
     def __init__(self,x,y,w,h):
         self.rect = pygame.Rect(x, y, w, h)
 
@@ -61,7 +61,7 @@ class Player:
 
         if self.on_ground:
             self.vel_y = -14
-            self.on_ground = True
+            self.on_ground = False
     def hit(self):
 
         if self.invuln == 0 :
@@ -69,7 +69,7 @@ class Player:
             self.vel_y = -10
             self.invuln = 60
 
-    def update(self, PLatform):
+    def update(self, Platform):
 
         key = pygame.key.get_pressed()
 
@@ -94,7 +94,7 @@ class Player:
 
         self.on_ground = False
 
-        for p in PLatform:
+        for p in Platform:
             if self.rect.colliderect(p.rect) and self.vel_y > 0:
 
                 self.rect.bottom = p.rect.top
@@ -120,14 +120,14 @@ class Game:
     def reset(self):
         self.player = Player()
         self.Platforms = [
-            PLatform(0,HEIGHT - 40, LEVL_WIDTH, 40),
-            PLatform(140, 330, 180, 20),
-            PLatform(380,260,180,20),
-            PLatform(610,320,140,20),
-            PLatform(900, 300, 250, 20),
-            PLatform(1200, 250, 200, 20),
-            PLatform(1500, 340, 220, 20),
-            PLatform(1800, 280, 220, 20)
+            Platform(0,HEIGHT - 40, LEVL_WIDTH, 40),
+            Platform(140, 330, 180, 20),
+            Platform(380,260,180,20),
+            Platform(610,320,140,20),
+            Platform(900, 300, 250, 20),
+            Platform(1200, 250, 200, 20),
+            Platform(1500, 340, 220, 20),
+            Platform(1800, 280, 220, 20)
         ]
 
         self.coins = [
@@ -154,10 +154,10 @@ class Game:
         self.finish = pygame.Rect(2050, HEIGHT - 100, 40, 60)
 
     def collect_coins(self):
-        for coin in self.coins[:]:
-            if self.player.rect.colliderect(coin.rect):
+        for c in self.coins[:]:
+            if self.player.rect.colliderect(c.rect):
                 self.score += 1
-                self.coins.remove(coin)
+                self.coins.remove(c)
     def enemy_hit(self):
         for Enemy in self.enemies[:]:
             if self.player.rect.colliderect(Enemy.rect):
