@@ -159,8 +159,8 @@ class Game:
                 self.score += 1
                 self.coins.remove(c)
     def enemy_hit(self):
-        for Enemy in self.enemies[:]:
-            if self.player.rect.colliderect(Enemy.rect):
+        for e in self.enemies[:]:
+            if self.player.rect.colliderect(e.rect):
                 self.player.hit()
 
     def check_finish(self):
