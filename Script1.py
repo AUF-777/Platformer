@@ -16,19 +16,50 @@ GRAVITY = 0.8
 #-------подготовка к камере--------
 LEVL_WIDTH = 2200
 
+bg_img = pygame.image.load('assets/image/bg.png')
+bg_img = pygame.transform.scale(bg_img, (WIDTH, HEIGHT))
+
+player_img = pygame.image.load('assets/image/player.png')
+player_img = pygame.transform.scale(player_img, (40,50))
+
+enemy_img = pygame.image.load('assets/image/enemy.png')
+enemy_img = pygame.transform.scale(enemy_img, (40,40))
+
+
+platform_img = pygame.image.load('assets/image/platform.png')
+platform_img = pygame.transform.scale(platform_img, (200,40))
+
+portal_img = pygame.image.load('assets/image/portal.png')
+portal_img = pygame.transform.scale(portal_img, (40,60))
+
+coin = [
+    pygame.transform.scale(pygame.image.load('assets/image/coin1.png'), (20,20)),
+    pygame.transform.scale(pygame.image.load('assets/image/coin2.png'), (20,20)),
+    pygame.transform.scale(pygame.image.load('assets/image/coin3.png'), (20,20)),
+    pygame.transform.scale(pygame.image.load('assets/image/coin4.png'), (20,20))
+]
+
 class Platform:
     def __init__(self,x,y,w,h):
         self.rect = pygame.Rect(x, y, w, h)
-
     def draw(self, surf, camera_x = 0):
         pygame.draw.rect(surf, (60,180,90), (self.rect.x - camera_x, self.rect.y, self.rect.w, self.rect.h))
 class Coin:
-
     def __init__(self,x,y):
         self.rect = pygame.Rect(x, y, 20, 20)
+        self.frame = 0
+        self.time = 0
+
+    def update(self):
+        self.time += 1
+        if self.time >= 10:
+            self.time = 0
+            self.frame += 1
+            if self.frame >=len(coin):
+                self.frame = 0
 
     def draw(self, surf, camera_x = 0):
-        pygame.draw.circle(surf, (255,215,0), (self.rect.centerx - camera_x,self.rect.centery), 10)
+        screen.blit(coin[self.frame], (self.rect.x - camera_x, self.rect.y, self.rect.w, self.rect.h))
 class Enemy:
     def __init__(self,x,y, left_limit, right_limit):
         self.rect = pygame.Rect(x, y, 40, 40)
@@ -43,8 +74,7 @@ class Enemy:
             self.dir *= -1
 
     def draw(self, surf, camera_x = 0):
-        pygame.draw.rect(surf, (220,70,70), (self.rect.x - camera_x, self.rect.y, self.rect.w, self.rect.h))
-
+        screen.blit(enemy_img, (self.rect.x - camera_x, self.rect.y, self.rect.w, self.rect.h))
 
 class Player:
     def __init__(self):
@@ -111,8 +141,7 @@ class Player:
 
         if self.invuln > 0 and (self.invuln % 10) < 5:
             return
-
-        pygame.draw.rect(surf, (80, 140,255), (self.rect.x - camera_x, self.rect.y, self.rect.w, self.rect.h))
+        screen.blit(player_img, (self.rect.x - camera_x, self.rect.y, self.rect.w, self.rect.h))
 
 class Game:
     def __init__(self):
@@ -188,6 +217,9 @@ class Game:
 
                 self.player.update(self.Platforms)
 
+                for c in self.coins:
+                    c.update()
+
                 for e in self.enemies:
                     e.update()
                 self.enemy_hit()
@@ -198,8 +230,8 @@ class Game:
                 self.check_finish()
                 self.update_camera()
 
-            screen.fill((135,206,234))
-
+            screen.blit(bg_img, (0,0))
+            screen.blit(portal_img, (self.finish.x - self.camera_x, self.finish.y))
             for Platform in self.Platforms:
                 Platform.draw(screen, self.camera_x)
 
