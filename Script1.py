@@ -43,7 +43,6 @@ coin = [
 
 class Platform:
     def __init__(self,x,y,w,h):
-        self.flag = 1
         self.rect = pygame.Rect(x, y, w, h)
         self.platform_img = pygame.image.load('assets/image/platform.png')
         self.platform_img = pygame.transform.scale(self.platform_img, (self.rect.width, self.rect.height))
@@ -169,13 +168,13 @@ class Game:
         self.Platforms2 += []
 
         self.Platforms = [
-            Platform(140, 330, 180, 20),
-            Platform(380,260,180,20),
-            Platform(610,320,140,20),
-            Platform(900, 300, 250, 20),
-            Platform(1200, 250, 200, 20),
-            Platform(1500, 340, 220, 20),
-            Platform(1800, 280, 220, 20)
+            Platform(140, 330, 180, 40),
+            Platform(380,260,180,40),
+            Platform(610,320,140,40),
+            Platform(900, 300, 250, 40),
+            Platform(1200, 250, 200, 40),
+            Platform(1500, 340, 220, 40),
+            Platform(1800, 280, 220, 40)
         ]
 
 
@@ -235,7 +234,7 @@ class Game:
 
             if not self.game_over:
 
-                self.player.update(self.Platforms)
+                self.player.update(self.Platforms + self.Platforms2)
 
                 for c in self.coins:
                     c.update()
