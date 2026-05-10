@@ -34,6 +34,9 @@ portal_img = pygame.transform.scale(portal_img, (40,60))
 okonchan_img = pygame.image.load('assets/image/fon_okonchan.jpg')
 okonchan_img = pygame.transform.scale(okonchan_img, (WIDTH,HEIGHT))
 
+menu_img = pygame.image.load('assets/image/Menu.png')
+menu_img = pygame.transform.scale(menu_img, (WIDTH,HEIGHT))
+
 coin = [
     pygame.transform.scale(pygame.image.load('assets/image/coin1.png'), (20,20)),
     pygame.transform.scale(pygame.image.load('assets/image/coin2.png'), (20,20)),
@@ -197,7 +200,7 @@ class Game:
 
         self.score = 0
         self.game_over = False
-
+        self.menu = False
         self.camera_x = 0
         self.finish = pygame.Rect(2050, HEIGHT - 100, 40, 60)
 
@@ -218,7 +221,6 @@ class Game:
     def update_camera(self):
 
         self.camera_x = max(0, min(self.player.rect.centerx - WIDTH // 2, LEVL_WIDTH - WIDTH))
-
     def run(self):
         running = True
         while running:
@@ -227,12 +229,21 @@ class Game:
                     running = False
                 if event.type == pygame.KEYDOWN:
 
-                    if event.key == pygame.K_SPACE and not self.game_over:
+                    if event.key == pygame.K_SPACE and not self.game_over and not self.menu:
                         self.player.jump()
-                    if event.key == pygame.K_r and self.game_over:
+                    if event.key == pygame.K_r and self.game_over and not self.menu or self.menu:
                         self.reset()
+                        self.game_over = False
+                        self.menu = False
+                    if event.key == pygame.K_ESCAPE and not self.menu:
+                        self.menu = True
+                        self.game_over = False
+                    if event.key == pygame.K_q and self.menu:
+                        running = False
 
-            if not self.game_over:
+
+
+            if not self.game_over and not self.menu:
 
                 self.player.update(self.Platforms + self.Platforms2)
 
@@ -259,25 +270,33 @@ class Game:
             for p in self.Platforms2:
                 p.draw(screen, self.camera_x)
 
-            for с in self.coins:
-                с.draw(screen, self.camera_x)
-            for Enemy in self.enemies:
-                Enemy.draw(screen, self.camera_x)
+            for c in self.coins:
+                c.draw(screen, self.camera_x)
+            for e in self.enemies:
+                e.draw(screen, self.camera_x)
             self.player.draw(screen, self.camera_x)
 
-            screen.blit(font.render(f"Счёт : {self.score}", True, (0,0,0)), (10,10))
+            screen.blit(font.render(f"Счёт: {self.score}", True, (0, 0, 0)), (10, 10))
             screen.blit(font.render(f"Жизни : {self.player.lives}", True, (0, 0, 0)), (10, 40))
 
-
+            if self.menu:
+                screen.blit(menu_img, (0, 0))
+                t1 = big_font.render("Меню", True, (255, 255, 255))
+                t2 = font.render("Нажми R начало игры", True, (255, 255, 255))
+                t3 = font.render("Нажми Q для выхода из игры", True, (255, 255, 255))
+                screen.blit(t3, t3.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 45)))
+                screen.blit(t2, t2.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 25)))
+                screen.blit(t1, t1.get_rect(center=(WIDTH / 2, HEIGHT / 2 - 20)))
 
             if self.game_over:
                 screen.blit(okonchan_img, (0, 0))
 
                 t1 = big_font.render("Ты проиграл", True, (255, 255, 255))
                 t2 = font.render("Нажми R для повторной игры", True, (255, 255, 255))
-
+                t3 = font.render("Нажми ESC для выхода в меню", True, (255, 255, 255))
                 screen.blit(t1, t1.get_rect(center=(WIDTH/2, HEIGHT/2 - 20)))
                 screen.blit(t2, t2.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 25)))
+                screen.blit(t3, t3.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 45)))
             pygame.display.flip()
             clock.tick(60)
 
